@@ -79,20 +79,17 @@
 
 
 
-<meta name="description" content="JVM常用配置参数Trace跟踪参数1、GC简单信息123-verbose:gc或-XX:+PrintGC 123456public static void main(String[] args) &amp;#123;    byte[] b=null;    for(int i=0;i&amp;lt;10;i++)&amp;#123;        b=new byte[1*1024*1024];    &amp;#125;&amp;">
+<meta name="description" content="运行时数据区Java虚拟机在执行Java程序的过程中会把它所管理的内存划分为若干个不同的数据区域。这些区域都有各自不同的用途，以及创建和销毁时间，有些区域随着虚拟机进程的启动而存在，有些区域则依赖用户线程的启动和结束而建立和销毁。Java虚拟机所管理的内存将会在包括以下几个运行时数据区域： 1、程序计数器程序计数器是线程私有的，记录执行的字节码的行号，多线程情况下，如果相互切换，需要每个线程记录自">
 <meta property="og:type" content="article">
-<meta property="og:title" content="JVM常用配置参数">
-<meta property="og:url" content="http://yoursite.com/2018/10/31/JVM常用配置参数/index.html">
+<meta property="og:title" content="JVM内存分配">
+<meta property="og:url" content="http://yoursite.com/2018/10/31/JVM内存分配/index.html">
 <meta property="og:site_name" content="岁月无痕">
-<meta property="og:description" content="JVM常用配置参数Trace跟踪参数1、GC简单信息123-verbose:gc或-XX:+PrintGC 123456public static void main(String[] args) &amp;#123;    byte[] b=null;    for(int i=0;i&amp;lt;10;i++)&amp;#123;        b=new byte[1*1024*1024];    &amp;#125;&amp;">
+<meta property="og:description" content="运行时数据区Java虚拟机在执行Java程序的过程中会把它所管理的内存划分为若干个不同的数据区域。这些区域都有各自不同的用途，以及创建和销毁时间，有些区域随着虚拟机进程的启动而存在，有些区域则依赖用户线程的启动和结束而建立和销毁。Java虚拟机所管理的内存将会在包括以下几个运行时数据区域： 1、程序计数器程序计数器是线程私有的，记录执行的字节码的行号，多线程情况下，如果相互切换，需要每个线程记录自">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://yoursite.com/2018/10/31/JVM常用配置参数/gc.png">
-<meta property="og:image" content="http://yoursite.com/2018/10/31/JVM常用配置参数/gcdetail.jpg">
-<meta property="og:updated_time" content="2018-10-31T06:11:58.778Z">
+<meta property="og:updated_time" content="2018-10-31T09:45:15.264Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="JVM常用配置参数">
-<meta name="twitter:description" content="JVM常用配置参数Trace跟踪参数1、GC简单信息123-verbose:gc或-XX:+PrintGC 123456public static void main(String[] args) &amp;#123;    byte[] b=null;    for(int i=0;i&amp;lt;10;i++)&amp;#123;        b=new byte[1*1024*1024];    &amp;#125;&amp;">
-<meta name="twitter:image" content="http://yoursite.com/2018/10/31/JVM常用配置参数/gc.png">
+<meta name="twitter:title" content="JVM内存分配">
+<meta name="twitter:description" content="运行时数据区Java虚拟机在执行Java程序的过程中会把它所管理的内存划分为若干个不同的数据区域。这些区域都有各自不同的用途，以及创建和销毁时间，有些区域随着虚拟机进程的启动而存在，有些区域则依赖用户线程的启动和结束而建立和销毁。Java虚拟机所管理的内存将会在包括以下几个运行时数据区域： 1、程序计数器程序计数器是线程私有的，记录执行的字节码的行号，多线程情况下，如果相互切换，需要每个线程记录自">
 
 
 
@@ -122,13 +119,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2018/10/31/JVM常用配置参数/">
+  <link rel="canonical" href="http://yoursite.com/2018/10/31/JVM内存分配/">
 
 
 
 
 
-  <title>JVM常用配置参数 | 岁月无痕</title>
+  <title>JVM内存分配 | 岁月无痕</title>
   
 
 
@@ -245,7 +242,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/31/JVM常用配置参数/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/31/JVM内存分配/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="LYT">
@@ -262,7 +259,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">JVM常用配置参数</h1>
+          <h1 class="post-title" itemprop="name headline">JVM内存分配</h1>
         
 
         <div class="post-meta">
@@ -274,7 +271,7 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-10-31T11:00:27+08:00">
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-10-31T14:46:39+08:00">
                 2018-10-31
               </time>
             
@@ -334,31 +331,15 @@
       
 
       
-        <h2 id="JVM常用配置参数"><a href="#JVM常用配置参数" class="headerlink" title="JVM常用配置参数"></a>JVM常用配置参数</h2><h3 id="Trace跟踪参数"><a href="#Trace跟踪参数" class="headerlink" title="Trace跟踪参数"></a>Trace跟踪参数</h3><h4 id="1、GC简单信息"><a href="#1、GC简单信息" class="headerlink" title="1、GC简单信息"></a>1、GC简单信息</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">-verbose:gc</span><br><span class="line">或</span><br><span class="line">-XX:+PrintGC</span><br></pre></td></tr></table></figure>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">byte</span>[] b=<span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;<span class="number">10</span>;i++)&#123;</span><br><span class="line">        b=<span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">1</span>*<span class="number">1024</span>*<span class="number">1024</span>];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>配置jvm参数：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">-Xmx10m -Xms5m -XX:+PrintGC</span><br><span class="line">或</span><br><span class="line">-Xmx10m -Xms5m -verbose:gc</span><br></pre></td></tr></table></figure>
-<p>结果:</p>
-<p><img src="/2018/10/31/JVM常用配置参数/gc.png" alt="gcdetail"> </p>
-<h4 id="2、打印GC的详细信息"><a href="#2、打印GC的详细信息" class="headerlink" title="2、打印GC的详细信息"></a>2、打印GC的详细信息</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-XX:+PrintGCDetails</span><br></pre></td></tr></table></figure>
-<p><img src="/2018/10/31/JVM常用配置参数/gcdetail.jpg" alt="gcdetail"> </p>
-<h4 id="3、打印CG发生的时间戳"><a href="#3、打印CG发生的时间戳" class="headerlink" title="3、打印CG发生的时间戳"></a>3、打印CG发生的时间戳</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-XX:+PrintGCTimeStamps</span><br></pre></td></tr></table></figure>
-<p>4、指定GC log的位置，以文件输出</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-Xloggc:gc.log</span><br></pre></td></tr></table></figure>
-<p>5、GC时打印堆信息</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-XX:+PrintHeapAtGC</span><br></pre></td></tr></table></figure>
-<p>6、监控类的加载</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-XX:+TraceClassLoading</span><br></pre></td></tr></table></figure>
-<h3 id="堆的参数设置"><a href="#堆的参数设置" class="headerlink" title="堆的参数设置"></a>堆的参数设置</h3><p>1、最大堆和最小堆</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-Xmx –Xms</span><br></pre></td></tr></table></figure>
-<p>2、新生代（New ）</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">-Xmn    //设置新生代大小</span><br><span class="line">-XX:NewRatio  //新生代（eden+2*s）和老年代（不包含永久区）的比值 4表示新生代:老年代=1:4，即年轻代占堆1/5</span><br><span class="line">-XX:SurvivorRatio //设置两个Survivor和eden的比,8表示两个Survivor:eden=2:8，即一个Survivor占年轻代1/10</span><br></pre></td></tr></table></figure>
-<p>3、OOM时导出堆到文件</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">-XX:+HeapDumpOnOutOfMemoryError    //OOM时导出堆到文件，方便排查问题</span><br><span class="line">-XX:+HeapDumpPath				//导出的路径</span><br></pre></td></tr></table></figure>
-<p>注：官方推荐新生代占堆的3/8，幸存代占新生代的1/10</p>
-<h3 id="永久区的参数设置"><a href="#永久区的参数设置" class="headerlink" title="永久区的参数设置"></a>永久区的参数设置</h3><p>1、永久区</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">-XX:PermSize  -XX:MaxPermSize //永久区的初始空间和最大空间，表示一个系统可以容纳多少个类型</span><br><span class="line"></span><br><span class="line">如果不断产生类，会报OOM</span><br><span class="line">如果堆空间没有用完却报了OOM，可能是永久区爆满导致的</span><br></pre></td></tr></table></figure>
-<h3 id="栈参数设置"><a href="#栈参数设置" class="headerlink" title="栈参数设置"></a>栈参数设置</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-Xss     //通常几百k，决定了函数方法调用的深度；每个线程都有独立的栈空间，局部变量、方法参数都分配到栈里</span><br></pre></td></tr></table></figure>
+        <h2 id="运行时数据区"><a href="#运行时数据区" class="headerlink" title="运行时数据区"></a>运行时数据区</h2><p>Java虚拟机在执行Java程序的过程中会把它所管理的内存划分为若干个不同的数据区域。这些区域都有各自不同的用途，以及创建和销毁时间，有些区域随着虚拟机进程的启动而存在，有些区域则依赖用户线程的启动和结束而建立和销毁。Java虚拟机所管理的内存将会在包括以下几个运行时数据区域：</p>
+<h3 id="1、程序计数器"><a href="#1、程序计数器" class="headerlink" title="1、程序计数器"></a>1、程序计数器</h3><p>程序计数器是线程私有的，记录执行的字节码的行号，多线程情况下，如果相互切换，需要每个线程记录自己执行的位置，以便切换回来时继续执行；如果执行的是java方法， 计数器记录正在执行的字节码的指令地址，如果是native方法，则为undefined；程序计数器所占的内存区域是不会引起outOfMemoryError的错误。</p>
+<h3 id="2、Java虚拟机栈"><a href="#2、Java虚拟机栈" class="headerlink" title="2、Java虚拟机栈"></a>2、Java虚拟机栈</h3><p>Java虚拟机栈是线程私有的，与线程同生共死，它描述的是java方法的执行的内存模型，方法在执行时，会创建一个栈帧，用于存放局部变量表、操作数栈、动态链接、方法出口等信息，每个方法从执行至结束，对应一个栈帧的入栈至出栈。</p>
+<h3 id="3、Java堆"><a href="#3、Java堆" class="headerlink" title="3、Java堆"></a>3、Java堆</h3><p>一般情况，Java堆是java虚拟机管理的最大内存，它是所有线程共享的，几乎所有的对象实例都在堆里分配空间；</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Map map=<span class="keyword">new</span> HashMap();</span><br><span class="line"><span class="keyword">byte</span>[] byteArr = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">2</span> * <span class="number">1024</span> * <span class="number">1024</span>]</span><br></pre></td></tr></table></figure>
+<p>=号后面是在堆中用new+ 构造器指令声明一个对象，前面是给对象声明一个引用存放在栈里，该引用为对象的引用变量，可以用该引用来操作堆中的对象。</p>
+<p>引用变量离开作用域就被释放，但是对象不是，会存在直到一定时间垃圾收集器对其进行回收，或者主动调用gc方法。</p>
+<h4 id="栈和堆的区别"><a href="#栈和堆的区别" class="headerlink" title="栈和堆的区别"></a>栈和堆的区别</h4><h5 id="栈"><a href="#栈" class="headerlink" title="栈"></a>栈</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> a=<span class="number">3</span>； </span><br><span class="line"><span class="keyword">int</span> b=<span class="number">3</span>；</span><br><span class="line"><span class="comment">//编译器处理int a = 3；在栈中创建一个变量为a的引用，在栈中查找3，如果没有，将3存入栈，将a指向3，接着处理 int b= 3；创建b引用变量，将b指向3，此时a和b均指向3。如果再令 a=4；查找4，没有就将4放入栈，a指向3；有就将a指向4。a的改变不会影响b</span></span><br></pre></td></tr></table></figure>
+<h5 id="堆"><a href="#堆" class="headerlink" title="堆"></a>堆</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">User user1=<span class="keyword">new</span> User();</span><br><span class="line">User user2=user1;</span><br><span class="line"><span class="comment">//一个对象引用变量修改了这个对象的内部状态，会影响到另一个对象引用变量。</span></span><br></pre></td></tr></table></figure>
 
       
     </div>
@@ -383,8 +364,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/10/26/docker初见/" rel="next" title="docker初见">
-                <i class="fa fa-chevron-left"></i> docker初见
+              <a href="/2018/10/31/GC算法和垃圾回收器/" rel="next" title="GC算法和垃圾回收器">
+                <i class="fa fa-chevron-left"></i> GC算法和垃圾回收器
               </a>
             
           </div>
@@ -392,10 +373,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/10/31/GC算法和垃圾回收器/" rel="prev" title="GC算法和垃圾回收器">
-                GC算法和垃圾回收器 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -518,7 +495,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#JVM常用配置参数"><span class="nav-number">1.</span> <span class="nav-text">JVM常用配置参数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Trace跟踪参数"><span class="nav-number">1.1.</span> <span class="nav-text">Trace跟踪参数</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1、GC简单信息"><span class="nav-number">1.1.1.</span> <span class="nav-text">1、GC简单信息</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2、打印GC的详细信息"><span class="nav-number">1.1.2.</span> <span class="nav-text">2、打印GC的详细信息</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3、打印CG发生的时间戳"><span class="nav-number">1.1.3.</span> <span class="nav-text">3、打印CG发生的时间戳</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#堆的参数设置"><span class="nav-number">1.2.</span> <span class="nav-text">堆的参数设置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#永久区的参数设置"><span class="nav-number">1.3.</span> <span class="nav-text">永久区的参数设置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#栈参数设置"><span class="nav-number">1.4.</span> <span class="nav-text">栈参数设置</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#运行时数据区"><span class="nav-number">1.</span> <span class="nav-text">运行时数据区</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、程序计数器"><span class="nav-number">1.1.</span> <span class="nav-text">1、程序计数器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2、Java虚拟机栈"><span class="nav-number">1.2.</span> <span class="nav-text">2、Java虚拟机栈</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3、Java堆"><span class="nav-number">1.3.</span> <span class="nav-text">3、Java堆</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#栈和堆的区别"><span class="nav-number">1.3.1.</span> <span class="nav-text">栈和堆的区别</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#栈"><span class="nav-number">1.3.1.1.</span> <span class="nav-text">栈</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#堆"><span class="nav-number">1.3.1.2.</span> <span class="nav-text">堆</span></a></li></ol></li></ol></li></ol></li></ol></div>
             
 
           </div>

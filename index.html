@@ -242,6 +242,329 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/31/JVM内存分配/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="LYT">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="岁月无痕">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/10/31/JVM内存分配/" itemprop="url">JVM内存分配</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-10-31T14:46:39+08:00">
+                2018-10-31
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/jvm/" itemprop="url" rel="index">
+                    <span itemprop="name">jvm</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="运行时数据区"><a href="#运行时数据区" class="headerlink" title="运行时数据区"></a>运行时数据区</h2><p>Java虚拟机在执行Java程序的过程中会把它所管理的内存划分为若干个不同的数据区域。这些区域都有各自不同的用途，以及创建和销毁时间，有些区域随着虚拟机进程的启动而存在，有些区域则依赖用户线程的启动和结束而建立和销毁。Java虚拟机所管理的内存将会在包括以下几个运行时数据区域：</p>
+<h3 id="1、程序计数器"><a href="#1、程序计数器" class="headerlink" title="1、程序计数器"></a>1、程序计数器</h3><p>程序计数器是线程私有的，记录执行的字节码的行号，多线程情况下，如果相互切换，需要每个线程记录自己执行的位置，以便切换回来时继续执行；如果执行的是java方法， 计数器记录正在执行的字节码的指令地址，如果是native方法，则为undefined；程序计数器所占的内存区域是不会引起outOfMemoryError的错误。</p>
+<h3 id="2、Java虚拟机栈"><a href="#2、Java虚拟机栈" class="headerlink" title="2、Java虚拟机栈"></a>2、Java虚拟机栈</h3><p>Java虚拟机栈是线程私有的，与线程同生共死，它描述的是java方法的执行的内存模型，方法在执行时，会创建一个栈帧，用于存放局部变量表、操作数栈、动态链接、方法出口等信息，每个方法从执行至结束，对应一个栈帧的入栈至出栈。</p>
+<h3 id="3、Java堆"><a href="#3、Java堆" class="headerlink" title="3、Java堆"></a>3、Java堆</h3><p>一般情况，Java堆是java虚拟机管理的最大内存，它是所有线程共享的，几乎所有的对象实例都在堆里分配空间；</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Map map=<span class="keyword">new</span> HashMap();</span><br><span class="line"><span class="keyword">byte</span>[] byteArr = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">2</span> * <span class="number">1024</span> * <span class="number">1024</span>]</span><br></pre></td></tr></table></figure>
+<p>=号后面是在堆中用new+ 构造器指令声明一个对象，前面是给对象声明一个引用存放在栈里，该引用为对象的引用变量，可以用该引用来操作堆中的对象。</p>
+<p>引用变量离开作用域就被释放，但是对象不是，会存在直到一定时间垃圾收集器对其进行回收，或者主动调用gc方法。</p>
+<h4 id="栈和堆的区别"><a href="#栈和堆的区别" class="headerlink" title="栈和堆的区别"></a>栈和堆的区别</h4><h5 id="栈"><a href="#栈" class="headerlink" title="栈"></a>栈</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> a=<span class="number">3</span>； </span><br><span class="line"><span class="keyword">int</span> b=<span class="number">3</span>；</span><br><span class="line"><span class="comment">//编译器处理int a = 3；在栈中创建一个变量为a的引用，在栈中查找3，如果没有，将3存入栈，将a指向3，接着处理 int b= 3；创建b引用变量，将b指向3，此时a和b均指向3。如果再令 a=4；查找4，没有就将4放入栈，a指向3；有就将a指向4。a的改变不会影响b</span></span><br></pre></td></tr></table></figure>
+<h5 id="堆"><a href="#堆" class="headerlink" title="堆"></a>堆</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">User user1=<span class="keyword">new</span> User();</span><br><span class="line">User user2=user1;</span><br><span class="line"><span class="comment">//一个对象引用变量修改了这个对象的内部状态，会影响到另一个对象引用变量。</span></span><br></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/31/GC算法和垃圾回收器/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="LYT">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="岁月无痕">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/10/31/GC算法和垃圾回收器/" itemprop="url">GC算法和垃圾回收器</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-10-31T14:29:37+08:00">
+                2018-10-31
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/jvm/" itemprop="url" rel="index">
+                    <span itemprop="name">jvm</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="GC算法和垃圾回收器"><a href="#GC算法和垃圾回收器" class="headerlink" title="GC算法和垃圾回收器"></a>GC算法和垃圾回收器</h2><p>在堆中创建的对象，是需要垃圾收集器进行回收，不然对象太多容易引起内存溢出，但是在回收之前需要判断哪些对象可以回收，即对象是否存活，判断标准是哪些对象还被引用，哪些已经不被使用</p>
+<h3 id="对象存活判断"><a href="#对象存活判断" class="headerlink" title="对象存活判断"></a>对象存活判断</h3><h3 id="引用计数算法"><a href="#引用计数算法" class="headerlink" title="引用计数算法"></a>引用计数算法</h3><p>引用计数器的实现：对于一个对象objA，只要有任何一个对象引用了objA，则objA的引用计数器就加1，当引用失效时，引用计数器就减1。只要对象objA的引用计数器的值为0，则对象A就不可能再被使用。</p>
+<p>缺点1：无法解决循环引用,例如两个对象</p>
+<p>缺点2：引用和去引用的加减法，影响性能</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ReferenceCountingGC</span> </span>&#123;  </span><br><span class="line">    <span class="keyword">public</span> Object instance = <span class="keyword">null</span>;  </span><br><span class="line">  </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> _1MB = <span class="number">1024</span> * <span class="number">1024</span>;  </span><br><span class="line">  </span><br><span class="line">    <span class="comment">/** </span></span><br><span class="line"><span class="comment">     * 这个成员属性的唯一意义就是占点内存，以便能在GC日志中看清楚是否被回收过 </span></span><br><span class="line"><span class="comment">     */</span>  </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">byte</span>[] bigSize = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">2</span> * _1MB];  </span><br><span class="line">  </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;  </span><br><span class="line">        ReferenceCountingGC objA = <span class="keyword">new</span> ReferenceCountingGC();  </span><br><span class="line">        ReferenceCountingGC objB = <span class="keyword">new</span> ReferenceCountingGC();  </span><br><span class="line">        objA.instance = objB;  </span><br><span class="line">        objB.instance = objA;  </span><br><span class="line">  </span><br><span class="line">        objA = <span class="keyword">null</span>;  </span><br><span class="line">        objB = <span class="keyword">null</span>;  </span><br><span class="line">  </span><br><span class="line">        <span class="comment">//假设在这行发生了GC，objA和ojbB是否被回收  </span></span><br><span class="line">        System.gc();  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>该例子结果进行了GC，java虚拟机并没有因为两个对象互相引用而不进行对象回收，java并没有采用该方法判断独享是否可以进行回收。</p>
+<h3 id="垃圾收集算法"><a href="#垃圾收集算法" class="headerlink" title="垃圾收集算法"></a>垃圾收集算法</h3><h4 id="标记-清除（mark-sweep）"><a href="#标记-清除（mark-sweep）" class="headerlink" title="标记-清除（mark-sweep）"></a>标记-清除（mark-sweep）</h4><p>该方法分为标记和清除，标记是通过从根节点开始标记出所有可达的对象，清除是从根节点开始清除所有未被标记的对象；</p>
+<p>优点：存活对象比较多的情况下回收很高效</p>
+<p>缺点： 效率低<br>       标记清除之后有大量不连续碎片，分配大对象时，容易提早引起垃圾收集</p>
+<h4 id="复制算法（Coping）"><a href="#复制算法（Coping）" class="headerlink" title="复制算法（Coping）"></a>复制算法（Coping）</h4><p>等分内存，等其中一块内存用完，将其中存活的对象移动到另一块内存，然后将其清除掉。<br>优点：每次对整个半区进行内存回收，内存分配时也就不用考虑内存碎片等问题，只要移动堆顶指针，按顺序分配内存即可，实现简单，运行高效。<br>缺点：浪费内存，每次只能用一半内存。</p>
+<h4 id="标记-整理（mark-compact）"><a href="#标记-整理（mark-compact）" class="headerlink" title="标记-整理（mark-compact）"></a>标记-整理（mark-compact）</h4><p>老年代一般使用这种算法 。 </p>
+<p>标记操作和“标记-清除”算法一致，后续操作不只是直接清理对象， 而是在清理无用对象完成后让所有存活的对象都向一端移动，并更新引用其对象的指针。 </p>
+<p>优点：不会产生内存碎片</p>
+<p>缺点：在标记-清除的基础上还需进行对象的移动，成本相对较高。</p>
+<h4 id="分代收集算法"><a href="#分代收集算法" class="headerlink" title="分代收集算法"></a>分代收集算法</h4><p>分为新生代（Young Generation）、老年代（Tenured Generation）<br>新生代存放新生成的对象，由于新生成的对象存活周期比较短，因此新生代一般采用复制算法，但是是对算法进行了改良，<br>将新生代分为一个eden区和两个survivor(from,to)区，一般按8:1:1比例划分，对象优先在Eden区中生成，内存不足时，将存活对象复制到from区，清空eden区，from区也存满是，将eden区和from存活的对象复制到to区，清空eden和from，将from和to区交换，保证to区为空，一直循环。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestGC</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> _1MB = <span class="number">1024</span> * <span class="number">1024</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        testAllocation();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">testAllocation</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">byte</span>[] allocation1, allocation2, allocation3, allocation4;</span><br><span class="line">        allocation1 = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">2</span> * _1MB];</span><br><span class="line">        allocation2 = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">2</span> * _1MB];</span><br><span class="line">        allocation3 = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">2</span> * _1MB];</span><br><span class="line">        allocation4 = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">4</span> * _1MB];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//vm参数：-verbose:gc -Xms20m -Xmx20m -Xmn10m -XX:+PrintGCDetails -XX:SurvivorRatio=8</span></span><br><span class="line"><span class="comment">//具体意义可以参考------JVM常用配置参数</span></span><br></pre></td></tr></table></figure>
+<p>结果</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Heap</span><br><span class="line"> PSYoungGen      total <span class="number">9216</span>K, used <span class="number">7660</span>K [<span class="number">0x00000000ff600000</span>, <span class="number">0x0000000100000000</span>, <span class="number">0x0000000100000000</span>)</span><br><span class="line">  eden space <span class="number">8192</span>K, <span class="number">93</span>% used [<span class="number">0x00000000ff600000</span>,<span class="number">0x00000000ffd7b328</span>,<span class="number">0x00000000ffe00000</span>)</span><br><span class="line">  from space <span class="number">1024</span>K, <span class="number">0</span>% used [<span class="number">0x00000000fff00000</span>,<span class="number">0x00000000fff00000</span>,<span class="number">0x0000000100000000</span>)</span><br><span class="line">  to   space <span class="number">1024</span>K, <span class="number">0</span>% used [<span class="number">0x00000000ffe00000</span>,<span class="number">0x00000000ffe00000</span>,<span class="number">0x00000000fff00000</span>)</span><br><span class="line"> ParOldGen       total <span class="number">10240</span>K, used <span class="number">4096</span>K [<span class="number">0x00000000fec00000</span>, <span class="number">0x00000000ff600000</span>, <span class="number">0x00000000ff600000</span>)</span><br><span class="line">  object space <span class="number">10240</span>K, <span class="number">40</span>% used [<span class="number">0x00000000fec00000</span>,<span class="number">0x00000000ff000010</span>,<span class="number">0x00000000ff600000</span>)</span><br><span class="line"> PSPermGen       total <span class="number">21504</span>K, used <span class="number">3055</span>K [<span class="number">0x00000000f9a00000</span>, <span class="number">0x00000000faf00000</span>, <span class="number">0x00000000fec00000</span>)</span><br><span class="line">  object space <span class="number">21504</span>K, <span class="number">14</span>% used [<span class="number">0x00000000f9a00000</span>,<span class="number">0x00000000f9cfbeb0</span>,<span class="number">0x00000000faf00000</span>)</span><br></pre></td></tr></table></figure>
+<h3 id="垃圾收集器"><a href="#垃圾收集器" class="headerlink" title="垃圾收集器"></a>垃圾收集器</h3><p>首先先了解一下并行和并发的概念<br>并行（Parallel）：指多条垃圾收集线程并行工作，但此时用户线程处于等待状态。<br>并发（Concurrent）：指用户线程与垃圾收集线程同时执行（不一定是并行的，可能是交替执行），用户程序在继续运行，而垃圾收集程序运行在另一个CPU上。</p>
+<h4 id="垃圾收集器关系图"><a href="#垃圾收集器关系图" class="headerlink" title="垃圾收集器关系图"></a>垃圾收集器关系图</h4><p><img src="/2018/10/31/GC算法和垃圾回收器/gclink.png" alt="gclink"></p>
+<h4 id="Serial"><a href="#Serial" class="headerlink" title="Serial"></a>Serial</h4><p>新生代的收集器，单线程执行，使用一个cpu或者一个收集线程进行垃圾收集，在执行时暂停其他所有的工作线程（stop the world），采用复制算法</p>
+<h4 id="ParNew"><a href="#ParNew" class="headerlink" title="ParNew"></a>ParNew</h4><p>parnew是serial的多线程版本，采用复制算法，但是也要stop the world，它可以与CMS收集器一起使用，是使用-XX:+UseConcMarkSweepGC默认的新生代收集器，当然也可以使用-XX:UseParNewGC来强制使用它。在单线程时，没有serial效果好，现在多个cpu的情况下，效果还是很客观，默认线程数是和CPU的个数一样，如果CPU过多，可以使用-XX:ParallelGCThreads参数来限制垃圾收集线程个数。</p>
+<h4 id="Parallel-scavenge"><a href="#Parallel-scavenge" class="headerlink" title="Parallel scavenge"></a>Parallel scavenge</h4><p>Parallel Scavenge是一个新生代收集器。使用复制算法的并行多线程收集器。其它收集器是为了尽可能的减少在GC是用户线程的停顿时间，但它是为了达到一个可控制的吞吐量（Throughput）。吞吐量就是CPU用于运行用户代码的时间与CPU总消耗时间的比值，即吞吐量 = 运行用户代码时间 /（运行用户代码时间 + 垃圾收集时间），虚拟机总共运行了100分钟，其中垃圾收集花掉1分钟，那吞吐量就是99%。</p>
+<p>适用场景：高吞吐量可以高效利用CPU完成程序的运算任务，因此主要适用在后台运算而不需要太多交互的任务。</p>
+<p>参数：有两个用于精确控制吞吐量，<br>-XX:MaxGCPauseMillis参数是控制最大垃圾收集停顿时间，允许的值是一个大于0的毫秒数，收集器将尽力保证内存回收花费的时间不超过设定值。不过不要认为如果把这个参数的值设置小一点就能使得系统的垃圾收集速度变得更快，GC停顿时间缩短是以牺牲吞吐量和新生代空间来换取的：系统把新生代调小一些，收集300MB新生代肯定比收集500MB快吧，这也直接导致垃圾收集发生得更频繁一些，原来10秒收集一次、每次停顿100毫秒，现在变成5秒收集一次、每次停顿70毫秒。停顿时间的确在下降，但吞吐量也降下来了。</p>
+<p>-XX:GCTimeRatio参数直接设置吞吐量大小的 。0&lt;GCTimeRatio&lt;100,垃圾收集时间占总时间的比率，相当于吞吐量的倒数，如果把此参数设置为19，那允许的最大GC时间就占总时间的5%（即1 /（1+19）），默认值为99，就是允许最大1%（即1 /（1+99））的垃圾收集时间。<br>另外一个是UseAdaptiveSizePolicy开关参数，当这个参数打开之后，就不需要手工指定新生代的大小（-Xmn）、Eden与Survivor区的比例（-XX:SurvivorRatio）、晋升老年代对象年龄（-XX:PretenureSizeThreshold）等细节参数了，虚拟机会根据当前系统的运行情况收集性能监控信息，动态调整这些参数以提供最合适的停顿时间或最大的吞吐量，这种调节方式称为GC自适应的调节策略（GC Ergonomics）。</p>
+<h4 id="Serial-old"><a href="#Serial-old" class="headerlink" title="Serial old"></a>Serial old</h4><p>serial old 是serial 的老年代收集版本，同样是单线程收集器，stop-the-world，使用标记-整理算法，主要用于Clinet模式下的虚拟机使用，在Server模式下，一个是和jdk1.5及之前的parallel scavenge搭配使用，另一个用途是在CMS失败时的备选方案。</p>
+<h4 id="Parallel-old"><a href="#Parallel-old" class="headerlink" title="Parallel old"></a>Parallel old</h4><p>parallel old 是parallel scavenge的老年代收集版本，使用多线程和标记-整理算法，jdk1.6才开始提供，之前版本，parallel scavenge只能和serial old（PS MarkSweep）一起使用 ，这样的话老年代单线程无法利用多cpu的条件，甚至还不如parnew 和cms结合的效率</p>
+<h4 id="CMS"><a href="#CMS" class="headerlink" title="CMS"></a>CMS</h4><p>CMS(Concurrent Mark Sweep)是一款获取最短回收停顿时间的垃圾回收器，比较适合B/S应用程序这种需要与用户交互的程序，良好的响应速度能提升用户的体验.<br>整个过程分为几个步骤<br>1、初始标记  stop the word  标记那些和gc根节点直接相连的对象<br>2、并发标记  线程和标记线程并发执行，在初始标记的基础上继续向下追溯标记，<br>3、并发预处理 并发预处理也是并发执行的，标记从新生代晋升的对象、新分配到老年代的对象以及在并发阶段被修改了的对象，减少下一阶段重新标记的工作量，因为下一阶段会stop the word<br>4、重新标记  这个阶段会stop the word，收集器线程重新扫描堆中的对象，进行可达性分析,标记活着的对象。<br>5、并发清理  用户线程被重新激活，同时清理垃圾对象，<br>6、并发重置，重置CMS收集器的数据结构，等待下一次GC</p>
+<h3 id="理解一下GC日志"><a href="#理解一下GC日志" class="headerlink" title="理解一下GC日志"></a>理解一下GC日志</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestGC</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">byte</span>[] b=<span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;<span class="number">10</span>;i++)&#123;</span><br><span class="line">            b=<span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">1</span>*<span class="number">1024</span>*<span class="number">1024</span>];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="comment">//-Xmx10m -Xms5m -XX:+PrintGCDetails -XX:+PrintGCTimeStamps</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">0.564: [GC [PSYoungGen: 1856K-&gt;488K(3072K)] 1856K-&gt;1560K(6656K), 0.0029567 secs] [Times: user=0.00 sys=0.00, real=0.00 secs] </span><br><span class="line">0.568: [GC [PSYoungGen: 2622K-&gt;504K(3072K)] 3694K-&gt;2632K(6656K), 0.0018243 secs] [Times: user=0.00 sys=0.00, real=0.00 secs] </span><br><span class="line">0.570: [GC [PSYoungGen: 2626K-&gt;496K(3072K)] 4754K-&gt;3712K(6656K), 0.0014617 secs] [Times: user=0.00 sys=0.00, real=0.00 secs] </span><br><span class="line">0.571: [Full GC [PSYoungGen: 496K-&gt;0K(3072K)] [ParOldGen: 3216K-&gt;1534K(6144K)] 3712K-&gt;1534K(9216K) [PSPermGen: 2710K-&gt;2709K(21504K)], 0.0164028 secs] [Times: user=0.02 sys=0.00, real=0.02 secs] </span><br><span class="line">0.588: [GC [PSYoungGen: 2063K-&gt;0K(3072K)] 3597K-&gt;2558K(9216K), 0.0007950 secs] [Times: user=0.00 sys=0.00, real=0.00 secs] </span><br><span class="line">0.590: [GC [PSYoungGen: 2057K-&gt;0K(3072K)] 4616K-&gt;3582K(9216K), 0.0007911 secs] [Times: user=0.00 sys=0.00, real=0.00 secs] </span><br><span class="line">Heap</span><br><span class="line"> PSYoungGen      total 3072K, used 1075K [0x00000000ffc80000, 0x0000000100000000, 0x0000000100000000)</span><br><span class="line">  eden space 2560K, 42% used [0x00000000ffc80000,0x00000000ffd8cd40,0x00000000fff00000)</span><br><span class="line">  from space 512K, 0% used [0x00000000fff00000,0x00000000fff00000,0x00000000fff80000)</span><br><span class="line">  to   space 512K, 0% used [0x00000000fff80000,0x00000000fff80000,0x0000000100000000)</span><br><span class="line"> ParOldGen       total 6144K, used 3582K [0x00000000ff600000, 0x00000000ffc00000, 0x00000000ffc80000)</span><br><span class="line">  object space 6144K, 58% used [0x00000000ff600000,0x00000000ff97f8f0,0x00000000ffc00000)</span><br><span class="line"> PSPermGen       total 21504K, used 2716K [0x00000000fa400000, 0x00000000fb900000, 0x00000000ff600000)</span><br><span class="line">  object space 21504K, 12% used [0x00000000fa400000,0x00000000fa6a7010,0x00000000fb900000)</span><br></pre></td></tr></table></figure>
+<p>根据第一条<br>0.564 代表GC的时间，虚拟机启动到GC的时间；<br>GC和Full GC代表垃圾收集停顿的类型，而不是区分新生代和老年代的GC；如果有full，代表GC发生了stop the world；<br>PSYoungGen\ParOldGen\PSPermGen 代表新生代采用parallel scavenge和 老年代采用parallel old<br>1856K-&gt;488K(3072K) GC前该内存区域已使用容量-&gt;GC后该内存区域已使用容量（该内存区域总容量）<br>1856K-&gt;1560K(6656K) GC前java新生代堆已使用容量-&gt;GC后java新生代堆已使用容量（java新生代堆总容量）<br>0.0029567 secs 该内存区域GC所占用的时间  单位是秒</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/31/JVM常用配置参数/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -918,7 +1241,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-count">6</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
